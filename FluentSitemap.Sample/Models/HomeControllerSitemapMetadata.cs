@@ -1,4 +1,5 @@
 ﻿using FluentSitemap.Core;
+using FluentSitemap.Sample.Controllers;
 
 namespace FluentSitemap.Sample.Models
 {
@@ -10,7 +11,7 @@ namespace FluentSitemap.Sample.Models
         {
             sitemap.Add(Home, "Index")
                    .Add(Home, "Scanner")
-                   .Add(Home, "SiteMetadata");
+                   .Add<HomeController>(c => c.Metadata());
         }
     }
 

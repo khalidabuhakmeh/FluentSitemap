@@ -49,6 +49,7 @@
     <Compile Include="ISitemapNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sitemap.cs" />
+    <Compile Include="SitemapHelper.cs" />
     <Compile Include="SitemapNode.cs" />
     <Compile Include="SitemapNodeValidator.cs" />
     <Compile Include="SitemapScanner.cs" />

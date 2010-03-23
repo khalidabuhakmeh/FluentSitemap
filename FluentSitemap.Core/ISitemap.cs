@@ -15,6 +15,8 @@
 // The latest version of this file can be found at http://github.com/khalidabuhakmeh/FluentSitemap
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
+using System.Web.Mvc;
 using System.Web.Routing;
 using System.Xml.Linq;
 
@@ -35,6 +37,14 @@ namespace FluentSitemap.Core
         /// <param name="action">the action name</param>
         /// <returns>the sitemap</returns>
         ISitemap Add(string controller, string action);
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>
+        /// <param name="controller">controller name</param>
+        /// <param name="action">action name</param>
+        /// <returns>the sitemap node</returns>
+        ISitemap Add<TController>(Expression<Func<TController, ActionResult>> action)
+            where TController : Controller;
         /// <summary>
         /// Add a sitemap node using a controller, action, and parameters
         /// </summary>

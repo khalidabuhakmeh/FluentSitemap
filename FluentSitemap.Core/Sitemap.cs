@@ -16,6 +16,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
@@ -66,6 +67,26 @@ namespace FluentSitemap.Core
         public ISitemap Add(string controller, string action)
         {
             Create(controller, action);
+            return this;
+        }
+
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>
+        /// <param name="controller">controller name</param>
+        /// <param name="action">action name</param>
+        /// <returns>the sitemap node</returns>
+        public ISitemap Add<TController>(Expression<Func<TController, ActionResult>> action)
+            where TController : Controller
+        {
+            Type type = typeof(TController);
+
+            string controllerName = SitemapHelper.GetControllerName(type);
+            var methodInfo = ((MethodCallExpression)action.Body).Method;
+            string actionName = SitemapHelper.GetActionName(methodInfo);
+
+            Add(controllerName, actionName);
+
             return this;
         }
 
@@ -155,6 +176,8 @@ namespace FluentSitemap.Core
 
             return node;
         }
+
+
 
         /// <summary>
         /// Creates a sitemap node attached to the existing sitemap

@@ -91,7 +91,7 @@ namespace FluentSitemap.Core
 
             foreach (var type in types)
             {
-                var controller = type.Name.ToLower().Replace("controller", string.Empty); // replace controller
+                var controller = SitemapHelper.GetControllerName(type);
 
                 MethodInfo[] methods = type.GetMethods();
 
@@ -102,15 +102,7 @@ namespace FluentSitemap.Core
                     if (!(method.IsPublic && method.ReturnType.IsAssignableFrom(typeof(ActionResult))))
                         continue;
 
-                    var action = method.Name;
-
-                    if (Attribute.IsDefined(method, typeof(ActionNameAttribute)))
-                    {
-                        var attribute = Attribute.GetCustomAttribute(method, typeof(ActionNameAttribute)) as ActionNameAttribute;
-
-                        if (attribute != null)
-                            action = attribute.Name;
-                    }
+                    var action = SitemapHelper.GetActionName(method);
 
                     // add the site node
                     sitemap.Add(controller, action);
