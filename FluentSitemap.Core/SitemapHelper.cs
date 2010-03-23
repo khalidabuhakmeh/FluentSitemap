@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Reflection;
 using System.Web.Mvc;
@@ -22,6 +21,15 @@ namespace FluentSitemap.Core
                 controllerName = controllerName.Substring(0, controllerName.Length - "Controller".Length);
 
             return controllerName;
+        }
+
+        public static string GetActionName<T>(Expression<Func<T, object>> actionExpression) where T : Controller
+        {
+            var methodCallExpression = actionExpression.Body as MethodCallExpression;
+            if (methodCallExpression == null)
+                throw new NotSupportedException("Expression signature is not yet supported");
+
+            return GetActionName(methodCallExpression.Method);
         }
 
         public static string GetActionName(MethodInfo action)

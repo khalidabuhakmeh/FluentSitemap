@@ -107,6 +107,13 @@ namespace FluentSitemap.Core
             return Create(controller, action, listParameters, null);            
         }
 
+        public ISitemap Add<TController>(Expression<Func<TController, object>> actionExpression, Func<IEnumerable<object>> listParameters)
+            where TController : Controller
+        {
+            string controller = SitemapHelper.GetControllerName<TController>();
+            return Create(controller, SitemapHelper.GetActionName(actionExpression), listParameters, null);
+        }
+
         /// <summary>
         /// Use a route to add a node
         /// </summary>
@@ -192,11 +199,9 @@ namespace FluentSitemap.Core
         public ISitemapNode Create<TController>(Expression<Func<TController, ActionResult>> action)
             where TController : Controller
         {
-            Type type = typeof(TController);
-
-            string controllerName = SitemapHelper.GetControllerName(type);
+            var controllerName = SitemapHelper.GetControllerName<TController>();
             var methodInfo = ((MethodCallExpression)action.Body).Method;
-            string actionName = SitemapHelper.GetActionName(methodInfo);
+            var actionName = SitemapHelper.GetActionName(methodInfo);
 
             var parameters = SitemapHelper.GetParameters((MethodCallExpression) action.Body);
 
@@ -222,6 +227,23 @@ namespace FluentSitemap.Core
             foreach (var parameters in listParameters.Invoke())
             {
                 var node = Create(controller, action, parameters);
+
+                if (settingsPerNode != null)
+                    settingsPerNode.Invoke(node);
+            }
+
+            return this;
+        }
+
+        public ISitemap Create<TController>(Expression<Func<TController, object>> actionExpression, Func<IEnumerable<object>> listParameters,
+                          Action<ISitemapNode> settingsPerNode) where TController : Controller
+        {
+            string controller = SitemapHelper.GetControllerName<TController>();
+            string action = SitemapHelper.GetActionName(actionExpression);
+
+            foreach (object parameters in listParameters.Invoke())
+            {
+                ISitemapNode node = Create(controller, action, parameters);
 
                 if (settingsPerNode != null)
                     settingsPerNode.Invoke(node);

@@ -11,6 +11,13 @@ namespace FluentSitemap.Sample.Controllers
     {        
         public ActionResult Index()
         {
+            /************************************************************
+             * 
+             * Don't Do this in a controller, this is 
+             * to show you what is possible
+             * 
+             ************************************************************/
+
             // You can pass in a HttpContext from anywhere
             // in you application
             ISitemap sitemap = new Sitemap(HttpContext);
@@ -37,7 +44,14 @@ namespace FluentSitemap.Sample.Controllers
                     // Add a sitemap node the way I want to
                     .Add(new SitemapNode {Location = "http://localhost/mycustomnode/"})
                     // add node with expression
-                    .Add<OtherController>(home => home.Test(1, "jeff bridges"))
+                    .Add<OtherController>(other => other.Test(1, "jeff bridges"))
+                    // add multiple nodes with expression and enumerable list
+                    .Add<OtherController>(other => other.Test(It.Is<int>(), It.Is<string>()), 
+                                          () => new[] {new {id = 1, dude = "Khalid"}, new {id = 2, dude = "Mark"}, new {id = 3, dude = "Jeff"}})
+                    // Create nodes with expression and list and alter nodes
+                    .Create<OtherController>(other => other.Test(It.Is<int>(), It.Is<string>()),
+                                             () => new[] { new { id = 1, dude = "Khalid" }, new { id = 2, dude = "Mark" }, new { id = 3, dude = "Jeff" } }
+                                           , sn => sn.WithLastModified(DateTime.Now))
                     // save the site map to the directory of the site
                     .Save("~/sitemap.xml");
                    

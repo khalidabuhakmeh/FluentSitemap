@@ -61,6 +61,16 @@ namespace FluentSitemap.Core
         /// <param name="listParameters">a list of parameters</param>
         /// <returns>the sitemap</returns>
         ISitemap Add(string controller, string action, Func<IEnumerable<object>> listParameters);
+
+        /// <summary>
+        /// Add many nodes at once using controller, action, and a function that returns a collection of parameters. Use <see cref="It"/> to plug parameters.
+        /// </summary>
+        /// <param name="actionExpression">the action</param>
+        /// <param name="listParameters">a list of parameters</param>
+        /// <returns>the sitemap</returns>
+        ISitemap Add<TController>(Expression<Func<TController, object>> actionExpression, Func<IEnumerable<object>> listParameters)
+            where TController : Controller;
+
         /// <summary>
         /// Use a route to add a node
         /// </summary>
@@ -112,6 +122,17 @@ namespace FluentSitemap.Core
         /// <param name="settingsPerNode">an action to be executed on each new node</param>
         /// <returns></returns>
         ISitemap Create(string controller, string action, Func<IEnumerable<object>> listParameters, Action<ISitemapNode> settingsPerNode);
+
+        /// <summary>
+        /// Creates many sitemap nodes attached to the existing sitemap. Use the <see cref="It"/> class to plug parameters of your action.
+        /// </summary>
+        /// <param name="actionExpression">The expression</param>
+        /// <param name="listParameters">list of parameters</param>
+        /// <param name="settingsPerNode">an action to be executed on each new node</param>
+        /// <returns></returns>
+        ISitemap Create<T>(Expression<Func<T, object>> actionExpression, Func<IEnumerable<object>> listParameters, Action<ISitemapNode> settingsPerNode) 
+            where T : Controller;
+
         /// <summary>
         /// Creates a sitemap node attached to the existing sitemap
         /// </summary>
