@@ -9,6 +9,11 @@ namespace FluentSitemap.Core
 {
     public static class SitemapHelper
     {
+        public static string GetControllerName<T>()
+        {
+            return GetControllerName(typeof (T));
+        }
+
         public static string GetControllerName(Type type)
         {
             string controllerName = type.Name;
