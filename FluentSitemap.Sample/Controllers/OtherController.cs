@@ -13,5 +13,10 @@ namespace FluentSitemap.Sample.Controllers
             return Content("Hello, World");
         }
 
+        public ActionResult Test(int id, string dude)
+        {
+            return Content(id.ToString());
+        }
+
     }
 }

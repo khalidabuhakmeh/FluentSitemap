@@ -72,21 +72,13 @@ namespace FluentSitemap.Core
 
         /// <summary>
         /// Creates a sitemap node attached to the existing sitemap
-        /// </summary>
-        /// <param name="controller">controller name</param>
+        /// </summary>        
         /// <param name="action">action name</param>
         /// <returns>the sitemap node</returns>
         public ISitemap Add<TController>(Expression<Func<TController, ActionResult>> action)
             where TController : Controller
         {
-            Type type = typeof(TController);
-
-            string controllerName = SitemapHelper.GetControllerName(type);
-            var methodInfo = ((MethodCallExpression)action.Body).Method;
-            string actionName = SitemapHelper.GetActionName(methodInfo);
-
-            Add(controllerName, actionName);
-
+            Create(action);
             return this;
         }
 
@@ -177,8 +169,6 @@ namespace FluentSitemap.Core
             return node;
         }
 
-
-
         /// <summary>
         /// Creates a sitemap node attached to the existing sitemap
         /// </summary>
@@ -189,6 +179,31 @@ namespace FluentSitemap.Core
         public ISitemapNode Create(string controller, string action, object parameters)
         {
             var node = new SitemapNode(this).WithLocation(Url(_urlHelper.Action(action, controller, parameters)));
+            SiteMapNodes.Add(node);
+
+            return node;
+        }
+
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>        
+        /// <param name="action">action expression</param>        
+        /// <returns>the sitmap node</returns>
+        public ISitemapNode Create<TController>(Expression<Func<TController, ActionResult>> action)
+            where TController : Controller
+        {
+            Type type = typeof(TController);
+
+            string controllerName = SitemapHelper.GetControllerName(type);
+            var methodInfo = ((MethodCallExpression)action.Body).Method;
+            string actionName = SitemapHelper.GetActionName(methodInfo);
+
+            var parameters = SitemapHelper.GetParameters((MethodCallExpression) action.Body);
+
+            // Create Location
+            var location = Url(_urlHelper.Action(actionName, controllerName, parameters));
+
+            var node = new SitemapNode(this).WithLocation(location);
             SiteMapNodes.Add(node);
 
             return node;

@@ -21,7 +21,9 @@ namespace FluentSitemap.Sample.Models
 
         public void Create(ISitemap sitemap)
         {
-            sitemap.Add(Other, "Index");
+            sitemap.Add(Other, "Index")
+                   .Add<OtherController>(c => c.Test(1, "dude"));
+
         }
     }
 }
