@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Web.Mvc;
 using FluentSitemap.Core;
+using FluentSitemap.Sample.Models;
 
 namespace FluentSitemap.Sample.Controllers
 {
@@ -48,6 +50,18 @@ namespace FluentSitemap.Sample.Controllers
             var sitemap = scanner.Create();
 
             return Content(sitemap.Xml().ToString());
+        }
+
+        public ActionResult Metadata()
+        {
+            // An example, you'll probably use your favorite
+            // IoC container to resolve all the metadata classes
+            var metadata = new List<ISitemapMetadata>
+                               {new HomeControllerSitemapMetadata(), new OtherControllerSitemapMetadata()};
+
+            var scanner = new SitemapScanner(HttpContext);
+
+            return Content(scanner.Create(metadata).Xml().ToString());
         }
     }
 }

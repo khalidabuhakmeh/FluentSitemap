@@ -30,6 +30,10 @@ namespace FluentSitemap.Core
         private readonly UrlHelper _urlHelper;
         private readonly HttpContextBase _context;
 
+        /// <summary>
+        /// Create a sitemap
+        /// </summary>
+        /// <param name="httpContextBase">The http context</param>
         public Sitemap(HttpContextBase httpContextBase)
         {
             if (httpContextBase == null) throw new ArgumentNullException("httpContextBase");
@@ -40,6 +44,11 @@ namespace FluentSitemap.Core
             _urlHelper = new UrlHelper(_context.Request.RequestContext);
         }
 
+        /// <summary>
+        /// Add a user created sitemap node
+        /// </summary>
+        /// <param name="node">the user sitemap node</param>
+        /// <returns></returns>
         public ISitemap Add(ISitemapNode node)
         {
             SitemapNodeValidator.Validate(node);
@@ -48,41 +57,83 @@ namespace FluentSitemap.Core
             return this;
         }
 
+        /// <summary>
+        /// Add a sitemap node by using a controller and action
+        /// </summary>
+        /// <param name="controller">the controller name</param>
+        /// <param name="action">the action name</param>
+        /// <returns>the sitemap</returns>
         public ISitemap Add(string controller, string action)
         {
             Create(controller, action);
             return this;
         }
 
+        /// <summary>
+        /// Add a sitemap node using a controller, action, and parameters
+        /// </summary>
+        /// <param name="controller">the controller name</param>
+        /// <param name="action">the action name</param>
+        /// <param name="parameters">the parameters</param>
+        /// <returns>the sitemap</returns>
         public ISitemap Add(string controller, string action, object parameters)
         {
             Create(controller, action, parameters);
             return this;
         }
 
+        /// <summary>
+        /// Add many nodes at once using controller, action, and a function that returns a collection of parameters
+        /// </summary>
+        /// <param name="controller">the controller name</param>
+        /// <param name="action">the action name</param>
+        /// <param name="listParameters">a list of parameters</param>
+        /// <returns>the sitemap</returns>
         public ISitemap Add(string controller, string action, Func<IEnumerable<object>> listParameters)
         {
-            throw new NotImplementedException();
+            return Create(controller, action, listParameters, null);            
         }
 
+        /// <summary>
+        /// Use a route to add a node
+        /// </summary>
+        /// <param name="routeName">the route name</param>
+        /// <param name="routeValues">the route values i.e. controller, action, parameters</param>
+        /// <returns></returns>
         public ISitemap AddFromRoute(string routeName, object routeValues)
         {
             CreateFromRoute(routeName, routeValues);
             return this;
         }
 
+        /// <summary>
+        /// Use a route to add a node
+        /// </summary>
+        /// <param name="routeName">the route name</param>
+        /// <param name="routeValues">the route values i.e. controller, action, parameters</param>
+        /// <returns></returns>
         public ISitemap AddFromRoute(string routeName, RouteValueDictionary routeValues)
         {
             CreateFromRoute(routeName, routeValues);
             return this;
         }
 
+        /// <summary>
+        /// Use a route to add a node
+        /// </summary>
+        /// <param name="routeName">the route name</param>
+        /// <param name="listRouteValues">the list of route values i.e. controller, action, parameters</param>
+        /// <returns></returns>
         public ISitemap AddFromRoute(string routeName, Func<IEnumerable<object>> listRouteValues)
         {
             CreateFromRoute(routeName, listRouteValues, null);
             return this;
         }
 
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>
+        /// <returns>the sitemap node</returns>
         public ISitemapNode Create()
         {
             var node = new SitemapNode(this);
@@ -91,6 +142,12 @@ namespace FluentSitemap.Core
             return node;
         }
 
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>
+        /// <param name="controller">controller name</param>
+        /// <param name="action">action name</param>
+        /// <returns>the sitemap node</returns>
         public ISitemapNode Create(string controller, string action)
         {
             var node = new SitemapNode(this).WithLocation(Url(_urlHelper.Action(action, controller)));
@@ -99,6 +156,13 @@ namespace FluentSitemap.Core
             return node;
         }
 
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>
+        /// <param name="controller">controller name</param>
+        /// <param name="action">action name</param>
+        /// <param name="parameters">the parameters</param>
+        /// <returns>the sitmap node</returns>
         public ISitemapNode Create(string controller, string action, object parameters)
         {
             var node = new SitemapNode(this).WithLocation(Url(_urlHelper.Action(action, controller, parameters)));
@@ -107,6 +171,14 @@ namespace FluentSitemap.Core
             return node;
         }
 
+        /// <summary>
+        /// Creates many sitemap nodes attached to the existing sitemap
+        /// </summary>
+        /// <param name="controller">controller name</param>
+        /// <param name="action">action name</param>
+        /// <param name="listParameters">list of parameters</param>
+        /// <param name="settingsPerNode">an action to be executed on each new node</param>
+        /// <returns></returns>
         public ISitemap Create(string controller, string action, Func<IEnumerable<object>> listParameters, Action<ISitemapNode> settingsPerNode)
         {
             foreach (var parameters in listParameters.Invoke())
@@ -120,6 +192,12 @@ namespace FluentSitemap.Core
             return this;
         }
 
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>
+        /// <param name="routeName">route name</param>
+        /// <param name="routeValues">the route values i.e. controller, action, parameters</param>
+        /// <returns>the sitemap node</returns>
         public ISitemapNode CreateFromRoute(string routeName, object routeValues)
         {
             var node = new SitemapNode(this).WithLocation(Url(_urlHelper.RouteUrl(routeName, routeValues)));
@@ -128,6 +206,12 @@ namespace FluentSitemap.Core
             return node;
         }
 
+        /// <summary>
+        /// Creates a sitemap node attached to the existing sitemap
+        /// </summary>
+        /// <param name="routeName">the route name</param>
+        /// <param name="routeValues">the route values i.e. controller, action, parameters</param>
+        /// <returns></returns>
         public ISitemapNode CreateFromRoute(string routeName, RouteValueDictionary routeValues)
         {
             var node = new SitemapNode(this).WithLocation(Url(_urlHelper.RouteUrl(routeName, routeValues)));
@@ -136,6 +220,13 @@ namespace FluentSitemap.Core
             return node;
         }
 
+        /// <summary>
+        /// Creates many sitemap nodes attached to the existing sitemap
+        /// </summary>
+        /// <param name="routeName">the route name</param>
+        /// <param name="listRouteValues">the list of route values</param>
+        /// <param name="settingsPerNode">the action to be executed on each node</param>
+        /// <returns></returns>
         public ISitemap CreateFromRoute(string routeName, Func<IEnumerable<object>> listRouteValues, Action<ISitemapNode> settingsPerNode)
         {
             foreach (var node in listRouteValues.Invoke()
@@ -148,6 +239,10 @@ namespace FluentSitemap.Core
             return this;
         }
 
+        /// <summary>
+        /// Return a xml document of the sitemap
+        /// </summary>
+        /// <returns></returns>
         public XDocument Xml()
         {
             XNamespace ns = "http://www.sitemaps.org/schemas/sitemap/0.9";
@@ -181,6 +276,10 @@ namespace FluentSitemap.Core
             return document;
         }
 
+        /// <summary>
+        /// Save the sitemap to the filesystem
+        /// </summary>
+        /// <param name="path">The file path, can be relative or absolute</param>
         public void Save(string path)
         {
             var newPath = path;
@@ -193,6 +292,11 @@ namespace FluentSitemap.Core
             Xml().Save(newPath);
         }
 
+        /// <summary>
+        /// Create the fully qualified Url of the executing site
+        /// </summary>
+        /// <param name="routedUrl">The end of the Url</param>
+        /// <returns>the full url</returns>
         private string Url(string routedUrl)
         {
             return string.Format("{0}{1}", _baseUrl, routedUrl);

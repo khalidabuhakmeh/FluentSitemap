@@ -17,6 +17,9 @@ using System;
 
 namespace FluentSitemap.Core
 {
+    /// <summary>
+    /// Validates SitemapNode
+    /// </summary>
     public static class SitemapNodeValidator
     {
         public static void Validate(ISitemapNode node)
@@ -27,8 +30,14 @@ namespace FluentSitemap.Core
             if (string.IsNullOrWhiteSpace(node.Location))
                 throw new ArgumentNullException("node.Location", "Location is required.");
 
+            if (!node.Location.StartsWith("http://") && !node.Location.StartsWith("https://"))
+                throw new ArgumentException("node.Location", "Location must start with http:// or https://");
+
+            if (node.Location.Length > 2048)
+                throw new ArgumentException("node.Location", "Location cannot be longer than 2048 characters.");
+
             if (node.Priority.HasValue && (node.Priority < 0 || node.Priority > 1))
-                throw new ArgumentNullException("node.Priority", "Priority must be between 0.0 and 1.0.");
+                throw new ArgumentException("node.Priority", "Priority must be between 0.0 and 1.0.");
         }
     }
 }

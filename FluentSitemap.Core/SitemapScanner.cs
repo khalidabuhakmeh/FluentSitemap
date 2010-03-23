@@ -26,22 +26,55 @@ namespace FluentSitemap.Core
     {
         private readonly HttpContextBase _httpContextBase;
 
+        /// <summary>
+        /// Create sitemap scanner
+        /// </summary>
+        /// <param name="httpContextBase"></param>
         public SitemapScanner(HttpContextBase httpContextBase)
         {
             _httpContextBase = httpContextBase;
         }
 
+        /// <summary>
+        /// Scan the calling assembly for controllers and make a sitemap from all the actions
+        /// </summary>
+        /// <returns></returns>
         public ISitemap Create()
         {
             Assembly assembly = Assembly.GetCallingAssembly();
             return GetSitemap(new [] {assembly});
         }
 
+        /// <summary>
+        /// Scan all the assemblies passed in for controllers and make a sitemap from all the actions
+        /// </summary>
+        /// <param name="assemblies"></param>
+        /// <returns></returns>
         public ISitemap Create(IEnumerable<Assembly> assemblies)
         {
             return GetSitemap(assemblies);
         }
 
+        /// <summary>
+        /// Create a sitemap from a list of sitemap metadata classes
+        /// </summary>
+        /// <param name="sitemapMetadatas"></param>
+        /// <returns></returns>
+        public ISitemap Create(IEnumerable<ISitemapMetadata> sitemapMetadatas)
+        {
+            var sitemap = new Sitemap(_httpContextBase);
+
+            foreach (var sitemapMetadata in sitemapMetadatas)
+                sitemapMetadata.Create(sitemap);
+
+            return sitemap;
+        }
+
+        /// <summary>
+        /// Create the sitemap
+        /// </summary>
+        /// <param name="assemblies"></param>
+        /// <returns></returns>
         private ISitemap GetSitemap(IEnumerable<Assembly> assemblies)
         {
             ISitemap sitemap = new Sitemap(_httpContextBase);

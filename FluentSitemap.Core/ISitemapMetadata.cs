@@ -15,12 +15,12 @@
 // The latest version of this file can be found at http://github.com/khalidabuhakmeh/FluentSitemap
 namespace FluentSitemap.Core
 {
-    /// <summary>
-    ///  used as a hint for the crawlers to indicate how often
-    ///  the page is modified and how often it should be indexed. 
-    /// </summary>
-    public enum ChangeFrequencyType
-    {
-        Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
+    public interface ISitemapMetadata
+    {        
+        /// <summary>
+        /// Allows you to build up a part of a larger sitemap
+        /// </summary>
+        /// <param name="sitemap">a sitemap</param>
+        void Create(ISitemap sitemap);        
     }
 }
