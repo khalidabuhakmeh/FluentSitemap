@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ChangeFrequencyType.cs" />
     <Compile Include="ISitemap.cs" />
     <Compile Include="ISitemapNode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
