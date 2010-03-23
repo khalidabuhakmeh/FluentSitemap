@@ -6,7 +6,7 @@ using FluentSitemap.Core;
 namespace FluentSitemap.Sample.Controllers
 {
     public class HomeController : Controller
-    {
+    {        
         public ActionResult Index()
         {
             // You can pass in a HttpContext from anywhere
@@ -39,6 +39,15 @@ namespace FluentSitemap.Sample.Controllers
                    
             // You can also get the Xml Document
             return Content(sitemap.Xml().ToString(), "text/xml", Encoding.UTF8);
+        }
+
+        public ActionResult Scanner()
+        {
+            var scanner = new SitemapScanner(HttpContext);
+
+            var sitemap = scanner.Create();
+
+            return Content(sitemap.Xml().ToString());
         }
     }
 }

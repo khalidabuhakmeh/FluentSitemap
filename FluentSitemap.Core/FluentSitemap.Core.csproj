@@ -50,6 +50,7 @@
     <Compile Include="Sitemap.cs" />
     <Compile Include="SitemapNode.cs" />
     <Compile Include="SitemapNodeValidator.cs" />
+    <Compile Include="SitemapScanner.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
