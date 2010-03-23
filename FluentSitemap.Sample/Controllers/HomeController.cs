@@ -36,8 +36,10 @@ namespace FluentSitemap.Sample.Controllers
                                           , sn => sn.WithLastModified(DateTime.Now))
                     // Add a sitemap node the way I want to
                     .Add(new SitemapNode {Location = "http://localhost/mycustomnode/"})
+                    // add node with expression
+                    .Add<OtherController>(home => home.Test(1, "jeff bridges"))
                     // save the site map to the directory of the site
-                   .Save("~/sitemap.xml");
+                    .Save("~/sitemap.xml");
                    
             // You can also get the Xml Document
             return Content(sitemap.Xml().ToString(), "text/xml", Encoding.UTF8);
