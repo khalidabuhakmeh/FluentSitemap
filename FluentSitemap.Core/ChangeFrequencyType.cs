@@ -21,6 +21,12 @@ namespace FluentSitemap.Core
     /// </summary>
     public enum ChangeFrequencyType
     {
-        Always, Hourly, Daily, Weekly, Monthly, Yearly, Never
+        Always,
+        Hourly,
+        Daily,
+        Weekly,
+        Monthly,
+        Yearly,
+        Never
     }
 }

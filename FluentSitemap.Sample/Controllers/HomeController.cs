@@ -8,7 +8,7 @@ using FluentSitemap.Sample.Models;
 namespace FluentSitemap.Sample.Controllers
 {
     public class HomeController : Controller
-    {        
+    {
         public ActionResult Index()
         {
             /************************************************************
@@ -20,50 +20,60 @@ namespace FluentSitemap.Sample.Controllers
 
             // You can pass in a HttpContext from anywhere
             // in you application
-            ISitemap sitemap = new Sitemap(HttpContext);
+            ISitemapConfigurator configurator = new SitemapConfigurator(HttpContext);
 
-                    // Add From a controller and action
-            sitemap.Add("Home", "Index")
-                   .Add("Home", "About")
-                    // Add From a Route
-                   .AddFromRoute("Default", new {id = "2"})
-                    // Create Allows you to create a node
-                    // and then edit the values
-                   .CreateFromRoute("Default", new {controller = "home", action = "index"})
-                        .WithPriority(0.3)
-                        .WithChangeFrequency(ChangeFrequencyType.Never)
-                        .Set() // <-- Call set to get back to SiteMap
-                    // Create From a Route allows you to
-                    // pass in a list of route values for dynamic routes
-                   .CreateFromRoute("Default", () => new[] {new {id = 1}, new {id = 2}, new {id = 3}}
-                                             , sn => sn.WithLastModified(DateTime.Now))
-                    // Create allows you to pass in a list of parameters
-                    // and modify each node
-                   .Create("Home", "Index", () => new[] {new {id = 1}, new {id = 2}, new {id = 3}}
-                                          , sn => sn.WithLastModified(DateTime.Now))
-                    // Add a sitemap node the way I want to
-                    .Add(new SitemapNode {Location = "http://localhost/mycustomnode/"})
-                    // add node with expression
-                    .Add<OtherController>(other => other.Test(1, "jeff bridges"))
-                    // add multiple nodes with expression and enumerable list
-                    .Add<OtherController>(other => other.Test(It.Is<int>(), It.Is<string>()), 
-                                          () => new[] {new {id = 1, dude = "Khalid"}, new {id = 2, dude = "Mark"}, new {id = 3, dude = "Jeff"}})
-                    // Create nodes with expression and list and alter nodes
-                    .Create<OtherController>(other => other.Test(It.Is<int>(), It.Is<string>()),
-                                             () => new[] { new { id = 1, dude = "Khalid" }, new { id = 2, dude = "Mark" }, new { id = 3, dude = "Jeff" } }
-                                           , sn => sn.WithLastModified(DateTime.Now))
-                    // save the site map to the directory of the site
-                    .Save("~/sitemap.xml");
-                   
+            // Add From a controller and action
+            ISitemap sitemap = configurator.Add("Home", "Index")
+                .Add("Home", "About")
+                // Add From a Route
+                .AddFromRoute("Default", new {id = "2"})
+                // Create Allows you to create a node
+                // and then edit the values
+                .CreateFromRoute("Default", new {controller = "home", action = "index"})
+                .WithPriority(0.3)
+                .WithChangeFrequency(ChangeFrequencyType.Never)
+                .Set() // <-- Call set to get back to SiteMap
+                // Create From a Route allows you to
+                // pass in a list of route values for dynamic routes
+                .CreateFromRoute("Default", () => new[] {new {id = 1}, new {id = 2}, new {id = 3}}
+                                 , sn => sn.WithLastModified(DateTime.Now))
+                // Create allows you to pass in a list of parameters
+                // and modify each node
+                .Create("Home", "Index", () => new[] {new {id = 1}, new {id = 2}, new {id = 3}}
+                        , sn => sn.WithLastModified(DateTime.Now))
+                // Add a sitemap node the way I want to
+                .Add(new SitemapNode {Location = "http://localhost/mycustomnode/"})
+                // add node with expression
+                .Add<OtherController>(other => other.Test(1, "jeff bridges"))
+                // add multiple nodes with expression and enumerable list
+                .Add<OtherController>(other => other.Test(It.Is<int>(), It.Is<string>()),
+                                      () =>
+                                      new[]
+                                          {
+                                              new {id = 1, dude = "Khalid"}, new {id = 2, dude = "Mark"},
+                                              new {id = 3, dude = "Jeff"}
+                                          })
+                // Create nodes with expression and list and alter nodes
+                .Create<OtherController>(other => other.Test(It.Is<int>(), It.Is<string>()),
+                                         () =>
+                                         new[]
+                                             {
+                                                 new {id = 1, dude = "Khalid"}, new {id = 2, dude = "Mark"},
+                                                 new {id = 3, dude = "Jeff"}
+                                             }
+                                         , sn => sn.WithLastModified(DateTime.Now))
+                // save the site map to the directory of the site
+                .Export();
+
             // You can also get the Xml Document
             return Content(sitemap.Xml().ToString(), "text/xml", Encoding.UTF8);
         }
 
         public ActionResult Scanner()
         {
-            var scanner = new SitemapScanner(HttpContext);
+            var scanner = new SitemapConfigurator(HttpContext);
 
-            var sitemap = scanner.Create();
+            ISitemap sitemap = scanner.FromAssemblyOf<HomeController>().Export();
 
             return Content(sitemap.Xml().ToString());
         }
@@ -75,9 +85,9 @@ namespace FluentSitemap.Sample.Controllers
             var metadata = new List<ISitemapMetadata>
                                {new HomeControllerSitemapMetadata(), new OtherControllerSitemapMetadata()};
 
-            var scanner = new SitemapScanner(HttpContext);
+            ISitemap sitemap = new SitemapConfigurator(HttpContext).FromMetaData(metadata).Export();
 
-            return Content(scanner.Create(metadata).Xml().ToString());
+            return Content(sitemap.Xml().ToString());
         }
     }
 }

@@ -7,23 +7,30 @@ namespace FluentSitemap.Sample.Models
     {
         private const string Home = "Home";
 
-        public void Create(ISitemap sitemap)
+        #region ISitemapMetadata Members
+
+        public void Create(ISitemapConfigurator sitemap)
         {
             sitemap.Add(Home, "Index")
-                   .Add(Home, "Scanner")
-                   .Add<HomeController>(c => c.Metadata());
+                .Add(Home, "Scanner")
+                .Add<HomeController>(c => c.Metadata());
         }
+
+        #endregion
     }
 
     public class OtherControllerSitemapMetadata : ISitemapMetadata
     {
         private const string Other = "Other";
 
-        public void Create(ISitemap sitemap)
+        #region ISitemapMetadata Members
+
+        public void Create(ISitemapConfigurator sitemap)
         {
             sitemap.Add(Other, "Index")
-                   .Add<OtherController>(c => c.Test(1, "dude"));
-
+                .Add<OtherController>(c => c.Test(1, "dude"));
         }
+
+        #endregion
     }
 }

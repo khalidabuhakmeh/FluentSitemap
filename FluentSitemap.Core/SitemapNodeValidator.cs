@@ -24,7 +24,7 @@ namespace FluentSitemap.Core
     {
         public static void Validate(ISitemapNode node)
         {
-            if (node == null) 
+            if (node == null)
                 throw new ArgumentNullException("node");
 
             if (string.IsNullOrWhiteSpace(node.Location))

@@ -15,7 +15,6 @@
 // The latest version of this file can be found at http://github.com/khalidabuhakmeh/FluentSitemap
 using System;
 
-
 namespace FluentSitemap.Core
 {
     public interface ISitemapNode
@@ -23,17 +22,20 @@ namespace FluentSitemap.Core
         /// <summary>
         /// The location of a node
         /// </summary>
-        /// <remarks>After a <loc> tag, an URL is expected which should start with "http://".The length of the URL can be 2048 characters at most.</remarks>
+        /// <remarks>After a loc tag, an URL is expected which should start with "http://".The length of the URL can be 2048 characters at most.</remarks>
         string Location { get; set; }
+
         /// <summary>
         /// The date when this location was last modified 
         /// Be advised that you do not have to modify this tag each time you modify the document. The search engines will get the dates of the documents once they crawl them.
         /// </summary>
         DateTime? LastModified { get; set; }
+
         /// <summary>
         /// used as a hint for the crawlers to indicate how ofter the page is modified and how often it should be indexed. 
         /// </summary>
         ChangeFrequencyType? ChangeFrequency { get; set; }
+
         /// <summary>
         /// The Priority value can vary from 0.0 to 1.0. 
         /// Be advised that this indicates only your personal preferences for the way you would like to have your website indexed. 
@@ -41,12 +43,14 @@ namespace FluentSitemap.Core
         /// Since the priority is relative it is used only for your website and even if you set a high priority to all of your pages this does not mean that they will be indexed more often, because this value is not used to make comparison between different websites.  
         /// </summary>
         double? Priority { get; set; }
+
         /// <summary>
         /// The location of a node. Must start with http:// or https://
         /// </summary>
         /// <param name="location"></param>
         /// <returns></returns>
-        ISitemapNode WithLocation(string Location);
+        ISitemapNode WithLocation(string location);
+
         /// <summary>
         /// The date when this location was last modified 
         /// Be advised that you do not have to modify this tag each time you modify the document. The search engines will get the dates of the documents once they crawl them.
@@ -54,12 +58,14 @@ namespace FluentSitemap.Core
         /// <param name="lastModified"></param>
         /// <returns></returns>
         ISitemapNode WithLastModified(DateTime? lastModified);
+
         /// <summary>
         /// used as a hint for the crawlers to indicate how ofter the page is modified and how often it should be indexed. 
         /// </summary>
         /// <param name="changeFrequency"></param>
         /// <returns></returns>
         ISitemapNode WithChangeFrequency(ChangeFrequencyType? changeFrequency);
+
         /// <summary>
         /// The Priority value can vary from 0.0 to 1.0. 
         /// Be advised that this indicates only your personal preferences for the way you would like to have your website indexed. 
@@ -69,16 +75,18 @@ namespace FluentSitemap.Core
         /// <param name="priority"></param>
         /// <returns></returns>
         ISitemapNode WithPriority(double? priority);
+
         /// <summary>
-        /// Allows you to set changes all at once by using a sitemap node
+        /// Allows you to set changes all at once by using a SiteMapConfigurator node
         /// </summary>
         /// <param name="changes">the changes to be mapped</param>
         /// <returns></returns>
-        ISitemap Set(ISitemapNode changes);
+        ISitemapConfigurator Set(ISitemapNode changes);
+
         /// <summary>
-        /// Returns you back the sitemap so you can continue adding nodes
+        /// Returns you back the SiteMapConfigurator so you can continue adding nodes
         /// </summary>
         /// <returns></returns>
-        ISitemap Set();
+        ISitemapConfigurator Set();
     }
 }

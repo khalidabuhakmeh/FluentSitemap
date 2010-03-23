@@ -16,11 +16,11 @@
 namespace FluentSitemap.Core
 {
     public interface ISitemapMetadata
-    {        
+    {
         /// <summary>
-        /// Allows you to build up a part of a larger sitemap
+        /// Allows you to build up a part of a larger SiteMapConfigurator
         /// </summary>
-        /// <param name="sitemap">a sitemap</param>
-        void Create(ISitemap sitemap);        
+        /// <param name="siteMapConfigurator">a SiteMapConfigurator</param>
+        void Create(ISitemapConfigurator siteMapConfigurator);
     }
 }

@@ -19,23 +19,26 @@ namespace FluentSitemap.Core
 {
     public class SitemapNode : ISitemapNode
     {
-        private readonly ISitemap _sitemap;
-        
-        /// <summary>
-        /// Constructor
-        /// </summary>
-        /// <remarks>Will be disconnected from a Sitemap</remarks>
-        public SitemapNode()
-        {}
+        private readonly ISitemapConfigurator _sitemapConfigurator;
 
         /// <summary>
         /// Constructor
         /// </summary>
-        /// <param name="sitemap">the sitemap the node is connected to</param>
-        public SitemapNode(ISitemap sitemap)
+        /// <remarks>Will be disconnected from a SitemapConfigurator</remarks>
+        public SitemapNode()
         {
-            _sitemap = sitemap;
         }
+
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="sitemapConfigurator">the SitemapConfigurator the node is connected to</param>
+        public SitemapNode(ISitemapConfigurator sitemapConfigurator)
+        {
+            _sitemapConfigurator = sitemapConfigurator;
+        }
+
+        #region ISitemapNode Members
 
         /// <summary>
         /// The location of a node
@@ -47,12 +50,12 @@ namespace FluentSitemap.Core
         /// The date when this location was last modified 
         /// Be advised that you do not have to modify this tag each time you modify the document. The search engines will get the dates of the documents once they crawl them.
         /// </summary>
-        public DateTime? LastModified { get; set;}
+        public DateTime? LastModified { get; set; }
 
         /// <summary>
         /// used as a hint for the crawlers to indicate how ofter the page is modified and how often it should be indexed. 
         /// </summary>
-        public ChangeFrequencyType? ChangeFrequency { get; set;}
+        public ChangeFrequencyType? ChangeFrequency { get; set; }
 
         /// <summary>
         /// The Priority value can vary from 0.0 to 1.0. 
@@ -111,13 +114,13 @@ namespace FluentSitemap.Core
         }
 
         /// <summary>
-        /// Allows you to set changes all at once by using a sitemap node
+        /// Allows you to set changes all at once by using a SiteMapConfigurator node
         /// </summary>
         /// <param name="changes">the changes to be mapped</param>
         /// <returns></returns>
-        public ISitemap Set(ISitemapNode changes)
+        public ISitemapConfigurator Set(ISitemapNode changes)
         {
-            this.WithChangeFrequency(changes.ChangeFrequency)
+            WithChangeFrequency(changes.ChangeFrequency)
                 .WithLastModified(changes.LastModified)
                 .WithLastModified(changes.LastModified)
                 .WithPriority(changes.Priority);
@@ -126,15 +129,17 @@ namespace FluentSitemap.Core
         }
 
         /// <summary>
-        /// Returns you back the sitemap so you can continue adding nodes
+        /// Returns you back the SiteMapConfigurator so you can continue adding nodes
         /// </summary>
         /// <returns></returns>
-        public ISitemap Set()
+        public ISitemapConfigurator Set()
         {
-            if (_sitemap == null)
-                throw new ArgumentNullException("you attempted to set a node outside of a sitemap");
+            if (_sitemapConfigurator == null)
+                throw new ArgumentNullException("you attempted to set a node outside of a SitemapConfigurator");
 
-            return _sitemap;
+            return _sitemapConfigurator;
         }
+
+        #endregion
     }
 }
